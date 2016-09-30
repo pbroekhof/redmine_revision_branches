@@ -21,8 +21,16 @@
         <%= link_to(@repository.identifier, {:controller => 'repositories', :action => 'show', :id => @repository.project, :repository_id => @repository.identifier, :path => to_path_param(@path)}) %>
         (<em><%= l(:label_branch) %>: <%= links_to_branches.join(', ').html_safe %></em>)
       <% end %>
-
-
+      
+      <% if changeset.filechanges.any? && User.current.allowed_to?(:browse_repository, changeset.project) %>
+        (<%= link_to(l(:label_diff),
+               :controller => 'repositories',
+               :action => 'diff',
+               :id     => changeset.project,
+               :repository_id => changeset.repository.identifier_param,
+               :path   => "",
+               :rev    => changeset.identifier) %>)
+      <% end %>
       <br/>
       <span class="author"><%= authoring(changeset.committed_on, changeset.author) %></span>
     </p>
